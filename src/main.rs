@@ -14,7 +14,9 @@ use crate::shortestpath::calculate_paths;
 fn main() {
     let filename = "fb_data.txt";
     if let Some(graph) = graph::read_graph(filename) {
+        // Calculate all shortest paths in the graph
         let all_shortest_paths = calculate_paths(&graph);
+        // Printing BFS analysis
         println!("Shortest Path Analysis:");
         println!();
         for (key, paths) in &all_shortest_paths {
@@ -24,9 +26,10 @@ fn main() {
             }
             println!();
         }
+       
+        let bfs_distance = 1; // Setting the BFS distance I want to be used in Jaccard similarity
         
-        let bfs_distance = 1; // Set the BFS distance you want to compute Jaccard similarity for
-        
+        // match will handle the Some or None possibilities in case the computation fails
         match compute_jaccard_similarity(filename, bfs_distance) {
             Some(jaccard_similarities) => {
                 println!("Jaccard Similarities for a BFS distance of {}:", bfs_distance);
@@ -67,7 +70,7 @@ fn main() {
 
 //TESTS
 
-
+    // Test for read_graph function
     #[test]
     fn test_read_graph() {
         let filename = "test.txt";
@@ -75,7 +78,7 @@ fn main() {
         assert_eq!(graph.num_nodes(), 4); // I made a txt file with 4 nodes
     }
 
-    
+    // Test for Jaccard similarity function
     #[test]
     fn test_compute_jaccard_similarity() {
         let filename = "test.txt"; // Use a test graph file
@@ -84,13 +87,13 @@ fn main() {
         assert_eq!(similarities[&(0, 3)], 0.0); // Example assertion to check based on nodes in the test.txt
     }
 
+    // Test for calculate_paths function
     #[test]
     fn test_calculate_paths() {
         let filename = "test.txt"; 
         let graph = read_graph(filename).expect("Failed to read test graph");
         let paths = calculate_paths(&graph);
         println!("Calculated shortest paths: {:?}", paths);
-    
         // Asserting the number of nodes in the graph
         assert_eq!(paths.len(), 4); 
         // Asserting
@@ -98,11 +101,13 @@ fn main() {
         assert_eq!(paths[&0][&3], 2); // Expected shortest path from node 0 to node 3 is 2
     }
     
+    // Test for statistical analysis functions (mean, max, percentage)
     #[test]
     fn test_stats() {
         let bfs_distance = 1; // Set the BFS distance you want to compute Jaccard similarity for
         let filename = "test.txt"; 
-        let graph = read_graph(filename).expect("Failed to read test graph");    
+        let graph = read_graph(filename).expect("Failed to read test graph"); 
+        // Using match to make it similar to what is being checked in the main function   
         match compute_jaccard_similarity(filename, bfs_distance) {
             Some(jaccard_similarities) => {
                 // Checking mean similarity

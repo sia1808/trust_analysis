@@ -12,6 +12,7 @@ pub fn compute_jaccard_similarity(graph_file: &str, bfs_distance: usize) -> Opti
         
         // Iterate over all nodes again to find pairs of nodes with specified BFS distance
         for &node2 in graph.connections.keys() {
+            // Check if a shortest path exists from node1 to node2 with the specified BFS distance
             if let Some(d) = shortest_paths.get(&node2) {
                 if *d == bfs_distance {
                     // Calculate Jaccard similarity between neighborhoods of source and target nodes
@@ -25,16 +26,19 @@ pub fn compute_jaccard_similarity(graph_file: &str, bfs_distance: usize) -> Opti
     Some(jaccard_similarities)
 }
 
+// Function to calculate Jaccard similarity between neighborhoods of two nodes
 fn calculate_jaccard_similarity(graph: &Graph, node1: usize, node2: usize) -> f64 {
+    // Collect the neighbors of node1 and node2 into HashSet data structures
     let neighbors1: HashSet<_> = graph.connections[&node1].iter().cloned().collect();
     let neighbors2: HashSet<_> = graph.connections[&node2].iter().cloned().collect();
 
+     // Calculate the intersections and unions
     let intersection = neighbors1.intersection(&neighbors2).count() as f64;
     let unions = neighbors1.union(&neighbors2).count() as f64;
     
     if unions == 0.0 {
         0.0 // To handle the case when both neighborhoods are empty
     } else {
-        intersection / unions
+        intersection / unions // Return the Jaccard similarity
     }
 }
